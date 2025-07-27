@@ -77,15 +77,15 @@ export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
           collapsed ? "-translate-x-full lg:w-16" : "translate-x-0 w-72 lg:w-64"
         )}
       >
-        <div className="flex h-full flex-col">
+        <div className="flex h-screen flex-col">
           {/* Header */}
           <div className="flex h-16 items-center justify-between px-4 border-b border-border">
             {!collapsed && (
               <div className="flex items-center space-x-2">
                 <div className="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-                  <span className="text-sm font-bold text-white">IT</span>
+                  <span className="text-sm font-bold text-white">NO</span>
                 </div>
-                <span className="text-lg font-bold text-foreground">ITELIA</span>
+                <span className="text-lg font-bold text-foreground">NOMADE</span>
               </div>
             )}
             <Button
@@ -99,7 +99,7 @@ export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-1 p-4">
+          <nav className="flex-1 space-y-1 p-4 overflow-y-auto">
             {menuItems.map((item) => {
               const isActive = location.pathname === item.path
               const Icon = item.icon
@@ -135,7 +135,7 @@ export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
           </nav>
 
           {/* Footer */}
-          <div className="border-t border-border p-4">
+          <div className="border-t border-border p-4 mt-auto">
             <div className={cn(
               "flex items-center",
               collapsed ? "justify-center" : "space-x-3"
@@ -149,7 +149,7 @@ export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
                     Administrateur
                   </p>
                   <p className="text-xs text-muted-foreground truncate">
-                    admin@itelia.ci
+                    admin@nomade.ci
                   </p>
                 </div>
               )}

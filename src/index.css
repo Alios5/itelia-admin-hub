@@ -8,7 +8,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* ITELIA Design System - Inspired by delivery apps */
+    /* NOMADE Design System - Inspired by delivery apps */
     --background: 0 0% 97.3%; /* #F8F8F8 */
     --foreground: 220 9% 11%; /* #1C1C1E */
 

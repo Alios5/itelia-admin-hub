@@ -101,20 +101,20 @@ export default function Dashboard() {
   const totalUsers = mockOrganizations.reduce((sum, org) => sum + org.userCount, 0)
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="h-screen bg-background flex overflow-hidden">
       <AdminSidebar 
         collapsed={sidebarCollapsed} 
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
       />
       
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <AdminHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
         
-        <main className="flex-1 p-4 lg:p-6 space-y-6">
+        <main className="flex-1 p-4 lg:p-6 space-y-6 overflow-y-auto">
           {/* Welcome Section */}
           <div className="space-y-2">
             <h1 className="text-2xl lg:text-3xl font-bold text-foreground">
-              Tableau de bord ITELIA
+              Tableau de bord NOMADE
             </h1>
             <p className="text-muted-foreground">
               Vue d'ensemble de la plateforme de livraison COD à Abidjan

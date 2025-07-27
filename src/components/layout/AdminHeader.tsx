@@ -37,9 +37,9 @@ export function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
         <div className="flex items-center lg:hidden">
           <div className="flex items-center space-x-2">
             <div className="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-              <span className="text-sm font-bold text-white">IT</span>
+              <span className="text-sm font-bold text-white">NO</span>
             </div>
-            <span className="text-lg font-bold text-foreground">ITELIA</span>
+            <span className="text-lg font-bold text-foreground">NOMADE</span>
           </div>
         </div>
 

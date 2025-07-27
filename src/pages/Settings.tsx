@@ -17,9 +17,9 @@ export default function Settings() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [settings, setSettings] = useState({
     // General Settings
-    platformName: "ITELIA",
+    platformName: "NOMADE",
     platformDescription: "Plateforme de gestion des livraisons contre-remboursement",
-    supportEmail: "support@itelia.ci",
+    supportEmail: "support@nomade.ci",
     timezone: "Africa/Abidjan",
     language: "fr",
     
@@ -71,13 +71,13 @@ export default function Settings() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-screen bg-background flex overflow-hidden">
       <AdminSidebar collapsed={sidebarCollapsed} onToggle={handleToggleSidebar} />
       
-      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <AdminHeader onToggleSidebar={handleToggleSidebar} />
         
-        <main className="p-6">
+        <main className="flex-1 p-6 overflow-y-auto">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
