@@ -8,27 +8,27 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* NOMADE Design System - Inspired by delivery apps */
-    --background: 0 0% 97.3%; /* #F8F8F8 */
-    --foreground: 220 9% 11%; /* #1C1C1E */
+    /* NOMADE Design System - Custom Palette */
+    --background: 29 77% 96%; /* #fef3ea */
+    --foreground: 0 0% 6%; /* #0f0f0f */
 
     --card: 0 0% 100%;
-    --card-foreground: 220 9% 11%;
+    --card-foreground: 0 0% 6%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 9% 11%;
+    --popover-foreground: 0 0% 6%;
 
-    /* Orange corail principal */
-    --primary: 11 100% 67%; /* #FF5C5C */
+    /* Orange principal */
+    --primary: 24 87% 63%; /* #f49851 */
     --primary-foreground: 0 0% 100%;
-    --primary-light: 11 100% 85%;
-    --primary-glow: 11 100% 75%;
+    --primary-light: 24 87% 80%;
+    --primary-glow: 24 87% 70%;
 
-    --secondary: 240 6% 96%;
-    --secondary-foreground: 220 9% 11%;
+    --secondary: 0 0% 95%;
+    --secondary-foreground: 0 0% 6%;
 
-    --muted: 240 6% 96%;
-    --muted-foreground: 220 9% 46%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 62%; /* #9f9f9f */
 
     --accent: 240 6% 90%;
     --accent-foreground: 220 9% 11%;
