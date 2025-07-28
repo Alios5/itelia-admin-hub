@@ -2,6 +2,7 @@ import { Bell, Plus, Search, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { CreateOrganizationModal } from "@/components/modals/CreateOrganizationModal"
 
 interface AdminHeaderProps {
   onToggleSidebar: () => void
@@ -46,14 +47,22 @@ export function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
         {/* Right section */}
         <div className="flex items-center space-x-3">
           {/* Add Organization Button */}
-          <Button size="sm" className="hidden sm:flex">
-            <Plus className="h-4 w-4 mr-1" />
-            Ajouter organisation
-          </Button>
+          <CreateOrganizationModal 
+            trigger={
+              <Button size="sm" className="hidden sm:flex">
+                <Plus className="h-4 w-4 mr-1" />
+                Ajouter organisation
+              </Button>
+            }
+          />
           
-          <Button size="sm" variant="soft" className="sm:hidden">
-            <Plus className="h-4 w-4" />
-          </Button>
+          <CreateOrganizationModal 
+            trigger={
+              <Button size="sm" variant="soft" className="sm:hidden">
+                <Plus className="h-4 w-4" />
+              </Button>
+            }
+          />
 
           {/* Notifications */}
           <div className="relative">

@@ -1,8 +1,10 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { Plus, Search, Filter, MoreHorizontal } from "lucide-react"
 import { AdminHeader } from "@/components/layout/AdminHeader"
 import { AdminSidebar } from "@/components/layout/AdminSidebar"
 import { OrganizationCard } from "@/components/dashboard/OrganizationCard"
+import { CreateOrganizationModal } from "@/components/modals/CreateOrganizationModal"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -67,6 +69,7 @@ const mockOrganizations = [
 ]
 
 export default function Organizations() {
+  const navigate = useNavigate()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
@@ -77,7 +80,12 @@ export default function Organizations() {
   }
 
   const handleManageOrganization = (id: string) => {
-    console.log("Gérer l'organisation:", id)
+    navigate(`/organizations/${id}`)
+  }
+
+  const handleOrganizationCreated = () => {
+    // Ici on pourrait rafraîchir la liste des organisations
+    console.log("Organisation créée avec succès")
   }
 
   const filteredOrganizations = mockOrganizations.filter(org => {
@@ -108,10 +116,7 @@ export default function Organizations() {
                 Gérez toutes les organisations clientes
               </p>
             </div>
-            <Button className="w-fit">
-              <Plus className="h-4 w-4 mr-2" />
-              Nouvelle organisation
-            </Button>
+            <CreateOrganizationModal onSuccess={handleOrganizationCreated} />
           </div>
 
           {/* Stats */}
