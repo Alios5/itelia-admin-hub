@@ -1,14 +1,15 @@
 import { useState } from "react"
-import { Crown, Package, Users, TrendingUp, Plus } from "lucide-react"
+import { Crown, Package, Users, TrendingUp, Plus, Sparkles } from "lucide-react"
 import { AdminHeader } from "@/components/layout/AdminHeader"
 import { AdminSidebar } from "@/components/layout/AdminSidebar"
 import { StatsCard } from "@/components/dashboard/StatsCard"
+import { CreatePlanModal } from "@/components/modals/CreatePlanModal"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { cn } from "@/lib/utils"
 
-// Mock data pour les abonnements
 const subscriptionPlans = [
   {
     id: "gratuit",
@@ -24,12 +25,14 @@ const subscriptionPlans = [
       "Tableau de bord basique"
     ],
     organizations: 8,
-    revenue: 0
+    revenue: 0,
+    isPromo: false
   },
   {
     id: "standard", 
     name: "Standard",
     price: "15,000 FCFA",
+    originalPrice: "20,000 FCFA",
     period: "/mois",
     color: "bg-info/10",
     textColor: "text-info",
@@ -41,7 +44,9 @@ const subscriptionPlans = [
       "API d'intégration"
     ],
     organizations: 12,
-    revenue: 180000
+    revenue: 180000,
+    isPromo: true,
+    promoText: "Offre limitée -25%"
   },
   {
     id: "premium",
@@ -59,7 +64,8 @@ const subscriptionPlans = [
       "Manager dédié"
     ],
     organizations: 6,
-    revenue: 210000
+    revenue: 210000,
+    isPromo: false
   }
 ]
 
@@ -100,6 +106,7 @@ const recentTransactions = [
 
 export default function Subscriptions() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
   const handleToggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed)
@@ -124,7 +131,7 @@ export default function Subscriptions() {
                 Gérez les plans et les paiements
               </p>
             </div>
-            <Button className="w-fit">
+            <Button className="w-fit" onClick={() => setIsCreateModalOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Nouveau plan
             </Button>
@@ -154,34 +161,95 @@ export default function Subscriptions() {
             />
           </div>
 
-          {/* Subscription Plans */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {subscriptionPlans.map((plan) => (
-              <Card key={plan.id} className="relative overflow-hidden">
-                {plan.id === "premium" && (
+              <Card 
+                key={plan.id} 
+                className={cn(
+                  "relative overflow-hidden transition-all duration-300",
+                  plan.isPromo && "ring-2 ring-primary/50 shadow-lg",
+                  plan.isPromo && "animate-pulse"
+                )}
+                style={{
+                  animation: plan.isPromo ? "glow 2s ease-in-out infinite alternate" : undefined
+                }}
+              >
+                {/* Badge de promotion */}
+                {plan.isPromo && (
+                  <div className="absolute top-0 right-0 bg-gradient-to-r from-primary to-warning text-white px-3 py-1 text-xs font-medium flex items-center gap-1 z-10">
+                    <Sparkles className="h-3 w-3" />
+                    PROMO
+                  </div>
+                )}
+                
+                {/* Badge populaire */}
+                {plan.id === "premium" && !plan.isPromo && (
                   <div className="absolute top-0 right-0 bg-warning text-warning-foreground px-3 py-1 text-xs font-medium">
                     Populaire
                   </div>
                 )}
+                
                 <CardHeader>
-                  <div className={`w-12 h-12 rounded-lg ${plan.color} flex items-center justify-center mb-4`}>
-                    <Crown className={`h-6 w-6 ${plan.textColor}`} />
+                  <div className={cn(
+                    "w-12 h-12 rounded-lg flex items-center justify-center mb-4 transition-all duration-300",
+                    plan.color,
+                    plan.isPromo && "shadow-lg ring-2 ring-primary/30"
+                  )}>
+                    <Crown className={cn("h-6 w-6", plan.textColor)} />
                   </div>
-                  <CardTitle className="text-xl">{plan.name}</CardTitle>
-                  <div className="flex items-baseline">
-                    <span className="text-3xl font-bold text-foreground">{plan.price}</span>
+                  
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    {plan.name}
+                    {plan.isPromo && (
+                      <Badge variant="warning" className="text-xs animate-bounce">
+                        <Sparkles className="h-3 w-3 mr-1" />
+                        PROMO
+                      </Badge>
+                    )}
+                  </CardTitle>
+                  
+                  <div className="flex items-baseline gap-2">
+                    {plan.isPromo && plan.originalPrice && (
+                      <span className="text-lg text-muted-foreground line-through">
+                        {plan.originalPrice}
+                      </span>
+                    )}
+                    <span className={cn(
+                      "text-3xl font-bold",
+                      plan.isPromo ? "text-primary" : "text-foreground"
+                    )}>
+                      {plan.price}
+                    </span>
                     <span className="text-muted-foreground ml-1">{plan.period}</span>
                   </div>
+                  
+                  {plan.isPromo && plan.promoText && (
+                    <div className="mt-2 p-2 bg-primary/10 border border-primary/20 rounded-md">
+                      <p className="text-xs text-primary font-medium flex items-center gap-1">
+                        <Sparkles className="h-3 w-3" />
+                        {plan.promoText}
+                      </p>
+                    </div>
+                  )}
                 </CardHeader>
+                
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Organisations</span>
-                      <Badge variant="secondary">{plan.organizations}</Badge>
+                      <Badge 
+                        variant={plan.isPromo ? "warning" : "secondary"}
+                        className={plan.isPromo ? "animate-pulse" : ""}
+                      >
+                        {plan.organizations}
+                      </Badge>
                     </div>
                     <Progress 
                       value={(plan.organizations / totalOrganizations) * 100} 
-                      className="h-2"
+                      className={cn(
+                        "h-2",
+                        plan.isPromo && "ring-1 ring-primary/30"
+                      )}
                     />
                   </div>
                   
@@ -190,7 +258,10 @@ export default function Subscriptions() {
                     <ul className="space-y-1">
                       {plan.features.map((feature, index) => (
                         <li key={index} className="text-sm text-muted-foreground flex items-center">
-                          <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2" />
+                          <div className={cn(
+                            "w-1.5 h-1.5 rounded-full mr-2",
+                            plan.isPromo ? "bg-primary animate-pulse" : "bg-primary"
+                          )} />
                           {feature}
                         </li>
                       ))}
@@ -200,7 +271,10 @@ export default function Subscriptions() {
                   <div className="pt-4 border-t border-border">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Revenus mensuels</span>
-                      <span className="font-medium text-foreground">
+                      <span className={cn(
+                        "font-medium",
+                        plan.isPromo ? "text-primary" : "text-foreground"
+                      )}>
                         {plan.revenue.toLocaleString()} FCFA
                       </span>
                     </div>
@@ -247,6 +321,11 @@ export default function Subscriptions() {
           </Card>
         </main>
       </div>
+      
+      <CreatePlanModal 
+        open={isCreateModalOpen} 
+        onOpenChange={setIsCreateModalOpen} 
+      />
     </div>
   )
 }
