@@ -1,13 +1,15 @@
 import { useState } from "react"
-import { Crown, Package, Users, TrendingUp, Plus, Sparkles } from "lucide-react"
+import { Crown, Package, Users, TrendingUp, Plus, Sparkles, Edit3, MoreVertical } from "lucide-react"
 import { AdminHeader } from "@/components/layout/AdminHeader"
 import { AdminSidebar } from "@/components/layout/AdminSidebar"
 import { StatsCard } from "@/components/dashboard/StatsCard"
 import { CreatePlanModal } from "@/components/modals/CreatePlanModal"
+import { EditPlanModal } from "@/components/modals/EditPlanModal"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 
 const subscriptionPlans = [
@@ -107,9 +109,14 @@ const recentTransactions = [
 export default function Subscriptions() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [editingPlan, setEditingPlan] = useState<typeof subscriptionPlans[0] | null>(null)
 
   const handleToggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed)
+  }
+
+  const handleEditPlan = (plan: typeof subscriptionPlans[0]) => {
+    setEditingPlan(plan)
   }
 
   const totalOrganizations = subscriptionPlans.reduce((sum, plan) => sum + plan.organizations, 0)
@@ -189,16 +196,34 @@ export default function Subscriptions() {
                   </div>
                 )}
                 
+                
                 <CardHeader>
-                  <div className={cn(
-                    "w-12 h-12 rounded-lg flex items-center justify-center mb-4 transition-all duration-300",
-                    plan.color,
-                    plan.isPromo && "shadow-lg ring-2 ring-primary/30"
-                  )}>
-                    <Crown className={cn("h-6 w-6", plan.textColor)} />
+                  <div className="flex items-center justify-between">
+                    <div className={cn(
+                      "w-12 h-12 rounded-lg flex items-center justify-center transition-all duration-300",
+                      plan.color,
+                      plan.isPromo && "shadow-lg ring-2 ring-primary/30"
+                    )}>
+                      <Crown className={cn("h-6 w-6", plan.textColor)} />
+                    </div>
+                    
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => handleEditPlan(plan)}>
+                          <Edit3 className="h-4 w-4 mr-2" />
+                          Modifier
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                   
-                  <CardTitle className="text-xl flex items-center gap-2">
+                  <div className="mt-4">
+                    <CardTitle className="text-xl flex items-center gap-2">
                     {plan.name}
                     {plan.isPromo && (
                       <Badge variant="warning" className="text-xs animate-bounce">
@@ -207,6 +232,7 @@ export default function Subscriptions() {
                       </Badge>
                     )}
                   </CardTitle>
+                  </div>
                   
                   <div className="flex items-baseline gap-2">
                     {plan.isPromo && plan.originalPrice && (
@@ -325,6 +351,12 @@ export default function Subscriptions() {
       <CreatePlanModal 
         open={isCreateModalOpen} 
         onOpenChange={setIsCreateModalOpen} 
+      />
+      
+      <EditPlanModal 
+        open={!!editingPlan} 
+        onOpenChange={(open) => !open && setEditingPlan(null)} 
+        planData={editingPlan}
       />
     </div>
   )
