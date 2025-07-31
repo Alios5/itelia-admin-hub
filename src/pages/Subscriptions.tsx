@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Crown, Package, Users, TrendingUp, Plus, Sparkles, Edit3, MoreVertical } from "lucide-react"
+import { Crown, Package, Users, TrendingUp, Plus, Sparkles, Edit3, MoreVertical, Trash2 } from "lucide-react"
 import { AdminHeader } from "@/components/layout/AdminHeader"
 import { AdminSidebar } from "@/components/layout/AdminSidebar"
 import { StatsCard } from "@/components/dashboard/StatsCard"
@@ -10,9 +10,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { cn } from "@/lib/utils"
 
-const subscriptionPlans = [
+const initialSubscriptionPlans = [
   {
     id: "gratuit",
     name: "Gratuit",
@@ -109,18 +119,38 @@ const recentTransactions = [
 export default function Subscriptions() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-  const [editingPlan, setEditingPlan] = useState<typeof subscriptionPlans[0] | null>(null)
+  const [editingPlan, setEditingPlan] = useState<typeof initialSubscriptionPlans[0] | null>(null)
+  const [planToDelete, setPlanToDelete] = useState<typeof initialSubscriptionPlans[0] | null>(null)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+
+  // Use state for subscription plans to allow client-side deletion
+  const [currentSubscriptionPlans, setCurrentSubscriptionPlans] = useState(initialSubscriptionPlans)
 
   const handleToggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed)
   }
 
-  const handleEditPlan = (plan: typeof subscriptionPlans[0]) => {
+  const handleEditPlan = (plan: typeof initialSubscriptionPlans[0]) => {
     setEditingPlan(plan)
   }
 
-  const totalOrganizations = subscriptionPlans.reduce((sum, plan) => sum + plan.organizations, 0)
-  const totalRevenue = subscriptionPlans.reduce((sum, plan) => sum + plan.revenue, 0)
+  const handleDeletePlanClick = (plan: typeof initialSubscriptionPlans[0]) => {
+    setPlanToDelete(plan)
+    setIsDeleteModalOpen(true)
+  }
+
+  const confirmDeletePlan = () => {
+    if (planToDelete) {
+      // In a real application, you would make an API call here to delete the plan from the database
+      // For this demo, we'll filter it out from the local state
+      setCurrentSubscriptionPlans(prevPlans => prevPlans.filter(p => p.id !== planToDelete.id))
+      setPlanToDelete(null)
+      setIsDeleteModalOpen(false)
+    }
+  }
+
+  const totalOrganizations = currentSubscriptionPlans.reduce((sum, plan) => sum + plan.organizations, 0)
+  const totalRevenue = currentSubscriptionPlans.reduce((sum, plan) => sum + plan.revenue, 0)
 
   return (
     <div className="h-screen bg-background flex overflow-hidden">
@@ -169,7 +199,7 @@ export default function Subscriptions() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            {subscriptionPlans.map((plan) => (
+            {currentSubscriptionPlans.map((plan) => (
               <Card 
                 key={plan.id} 
                 className={cn(
@@ -217,6 +247,13 @@ export default function Subscriptions() {
                         <DropdownMenuItem onClick={() => handleEditPlan(plan)}>
                           <Edit3 className="h-4 w-4 mr-2" />
                           Modifier
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          onClick={() => handleDeletePlanClick(plan)} 
+                          className="text-destructive focus:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Supprimer
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -358,6 +395,28 @@ export default function Subscriptions() {
         onOpenChange={(open) => !open && setEditingPlan(null)} 
         planData={editingPlan}
       />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Êtes-vous absolument sûr ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action ne peut pas être annulée. Cela supprimera définitivement le plan d'abonnement{" "}
+              <span className="font-semibold text-foreground">{planToDelete?.name}</span> de nos serveurs.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => {
+              setIsDeleteModalOpen(false);
+              setPlanToDelete(null);
+            }}>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeletePlan} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Supprimer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
